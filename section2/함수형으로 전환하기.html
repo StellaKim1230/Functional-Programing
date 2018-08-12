@@ -1,0 +1,106 @@
+<script>
+var users = [
+  { id: 1, name: 'ID', age: 36 },
+  { id: 2, name: 'BJ', age: 32 },
+  { id: 3, name: 'JM', age: 32 },
+  { id: 4, name: 'PJ', age: 27 },
+  { id: 5, name: 'HA', age: 25 },
+  { id: 6, name: 'JE', age: 26 },
+  { id: 7, name: 'JI', age: 31 },
+  { id: 8, name: 'MP', age: 23 },
+]
+
+// 1. 명령형 코드
+// 1-1. 30세 이상인 users를 거른다.
+var temp_users = [];
+for (var i = 0; i <users.length; i++) {
+  if (users[i].age >= 30) {
+    temp_users.push(users[i])
+  }
+}
+console.log(temp_users);
+
+// 1-2. 30세 이상인 users의 names를 수집한다.
+var names = [];
+for(var i = 0; i<temp_users.length; i++) {
+  names.push(temp_users[i].name);
+}
+console.log(names);
+
+// 1-3. 30세 미만인 users를 거른다.
+var temp_users = [];
+for (var i = 0; i <users.length; i++) {
+  if (users[i].age < 30) {
+    temp_users.push(users[i])
+  }
+}
+console.log(temp_users);
+
+// 1-4. 30세 미만인 users의 ages를 수집한다.
+var ages = [];
+for(var i = 0; i<temp_users.length; i++) {
+  ages.push(temp_users[i].age);
+}
+console.log(ages);
+
+
+// 2. 1번을 _filter, _map으로 리팩토링
+
+function _filter(list, predi) {
+  // filter과 같은 함수를 응용형함수라 하는데 이는 함수가 함수를 받아서 원하는 시점에 해당하는 함수가 알고있는 인자를
+  // 적용하는 식으로 프로그래밍 하는 함수
+  var new_list = [];
+  for (var i = 0; i <list.length; i++) {
+    if (predi(list[i])) { // 어떤 조건일때 if문 안에 들어올 것인가를 predi함수에 완전히 위임한다.
+      new_list.push(list[i])
+    }
+  }
+  return new_list; // console.log는 부수효과를 주는 코드여서 리턴하는 형태로 함수를 고친다.
+}
+
+function _map(list, mapper) {
+  var new_list = [];
+  for(var i = 0; i<list.length; i++) {
+    new_list.push(mapper(list[i]));
+  }
+  return new_list;
+}
+
+var over_30 = _filter(users, function(user) { return user.age >= 30; });
+console.log(over_30);
+
+var names = _map(over_30, function(user) {
+  return user.name;
+})
+console.log(names);
+
+var under_30 = _filter(users, function(user) { return user.age < 30; });
+console.log(under_30);
+
+var ages = _map(under_30, function(user) {
+  return user.age;
+})
+console.log(ages);
+
+console.log(_map(
+  _filter(users, function(user) { return user.age >= 30; }),
+  function(user) { return user.name; }))
+
+console.log(_map(
+  _filter(users, function(user) { return user.age < 30; }),
+  function(user) { return user.age; }))
+
+// _filter, _map 함수는 users만을 위한 함수가 아니라 어떠한 값을 필터링 할 수 있는 함수가 되었다.
+// 이유 : 받는 값이 어떻게 설계되었는가, 어떻게 생겼는가에 대해서 필터를 사용하고 있는 개발자가
+//       알고 있고, 그거에 규격에 맞는 순수함수를 보조함수로 넘겨주기 때문에 어떤 값이 배열에 들어있든
+//       걸러낼 수 있는 필터가 되었다.. 다형성이 높고 재활용성이 높은 함수가 되었다.
+
+/* console.log(
+  _filter([1, 2, 3, 4], function(num) { return num % 2; }))
+  
+  console.log(
+    _filter([1, 2, 3, 4], function(num) { return !(num % 2); }))
+    
+  console.log(_map([1,2,3], function(num) { return num * 2; })) */
+
+</script>
