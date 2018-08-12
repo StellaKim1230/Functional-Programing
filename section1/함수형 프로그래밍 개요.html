@@ -138,11 +138,11 @@ function f4(f1, f2, f3) {
   return f3(f1() + f2()); // 아래 함수를 적용하면 f1() + f2() 가 a인자로 작용
 }
 
-f4(
+console.log(f4(
   function() { return 2; }, // 순수함수
   function() { return 1; },  // 순수함수
   function(a) { return a * a; }  // 순수함수
-)
+))
 
 // 비동기, 동시성 일어나는 시점에서 그 시점까지 값으로 다루다고 원하는 시점에 평가를 한다.
 
