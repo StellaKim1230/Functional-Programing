@@ -92,10 +92,61 @@ add2 함수를 보면 c가 변경되기 전에 평가했느냐, c가 변경된 �
 
 /* 일급 함수: 함수를 값으로 다룰 수 있다. */
 // 1. 함수를 변수에 담을 수 있다.
+var f1 = function(a) { return a * a;};
+console.log(f1);
+
+var f2 = add;
+console.log(f2);
 // 2. 변수에 담은 함수가 값으로 다뤄질 수 있기 때문에
 //    인자로 넘겨지거나 다른 함수에 인자로 넘겨져서 인자로 넘겨진 함수를 다른 함수가 실행 할 수 있다.
+function f3(f) {
+  return f();
+}
+// f3 은 함수를 받아서 함수 내부에서 함수를 평가한 다음에 그 결과를 리턴하는 함수이다.
+console.log(f3(function() { return 10; }));
+console.log(f3(function() { return 20; }));
+
 // 3. 원하는 시점에 들고 다니다가 원하는 시점에 평가 할 수 있는 함수.
 
-
 /* add_maker */
+// add_maker는 a라는 값을 받아서 a를 알고 있는 컨텍스트에서 클로저인 함수를 정의하면서 리턴한다.
+// 내부함수가 add_maker 함수 스코프에서 알고있는 a라는 값을 참조하고 있기 때문에 내부함수는
+// a라는 값을 기억하는 함수가 되면서 클로저가 되서 add10에 리턴된다.
+function add_maker(a) {
+  return function(b) { // 이 함수가 클로저, 순수함수이다. 함수를 값으로 다룬다.
+    return a + b; // a라는 값은 변수이지만 여기서 참조를 할 뿐 변경을 하고 있지는 않다. a를 사용하는곳은 어디에도 없다.
+  }
+}
+
+// add_maker가 리턴하는 함수는 add10에 들어가게 되고, 
+var add10 = add_maker(10);
+//var add10 = function(b) { // add10은 a를 기억하는 클로저가 된다.
+//  return 10 + b;
+//}
+console.log( add10(20) );
+
+var add5 = add_maker(5);
+var add15 = add_maker(15);
+
+add5(10); // return 15
+add15(10); // return 25
+
+// 어느 시점에 어느 평가를 하던 동일한 값을 리턴한다.
+console.log( add10(20) );
+
+function f4(f1, f2, f3) {
+  return f3(f1() + f2()); // 아래 함수를 적용하면 f1() + f2() 가 a인자로 작용
+}
+
+f4(
+  function() { return 2; }, // 순수함수
+  function() { return 1; },  // 순수함수
+  function(a) { return a * a; }  // 순수함수
+)
+
+// 비동기, 동시성 일어나는 시점에서 그 시점까지 값으로 다루다고 원하는 시점에 평가를 한다.
+
 </script>
+
+<!-- 언제 평가해도 상관 없는 순수함수들을 많이 만믈고, 그리고 그 순수함수들을 값으로 들고다니면서 필요한 시점
+마다 평가를 하면서 그런 방식으로 다양한 로직을 만들어 나가는 것이 함수형 프로그래밍이다.-->
