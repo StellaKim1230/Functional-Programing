@@ -84,4 +84,88 @@ console.log(_map(
     
   console.log(_map([1,2,3], function(num) { return num * 2; })) */
 
+// 3. each 만들기
+  // 2. 외부 다형성
+    //1. array_like, arguments, documnet.querySelectorAll
+
+// array 에는 map 이라는 함수가 있다.
+console.log(
+  [1, 2, 3, 4].map(function(val) {
+    return val * 2;
+  })
+);
+
+// array 에는 filter 이라는 함수가 있다.
+console.log(
+  [1, 2, 3, 4].filter(function(val) {
+    return val % 2;
+  })
+);
+
+// map, filter 있는데 굳이 만들어 사용한 이유는?
+/** array에 있는 map, filter는 정확히 말하면 메서드이다.
+함수가 아니라 메서드이다. 순수함수가 아니다. 메서드는 객체 상태에 따라 결과가 달라지는
+특징을 가지고 있어서 우리가 만든 map, filter와는 차이가 있다. 메서드는 객체지향 프로그래밍이다.
+위에 있는 map, filter는 객체의 메서드이고, 메서드의 특징은 해당 클래스에 정의되기 떄문에 해당 클래스의 
+인스턴스에서만 사용 할 수 있는 특징이 있다. 이 인스턴스는 array가 아니면 사용  할 수 없다..
+javascript에는 array가 아닌데 array처럼 여겨지는 객체들이 많다.
+아마도 array like 객체들을 많이 사용했을만한 객체는 jquery 객체이다..
+
+$('div') : jquery 객체는 array가 아니고 array like 객체이다..
+**/
+
+//console.log(documnet.querySelectorAll('*'))
+
+// 3. 내부 다형성
+    // 1. predi, iter, mapper
+
+/** 두번째 인자를 콜백 함수라하는데, 콜백함수는 무조건 어떤 일들을 다 수행한 다음에
+다시 돌려줄떄 맨 끝에서 다시 돌려줄떄 뜻하는 함수로서 정의한다면 predicate는 어떤 
+조건을 리턴하는 함수, 각각의 역할에 맞는 보조함수의 이름을 불러주는 것이 좋다. **/
+// 내부 다형성은 두번쨰에 넘기는 함수와 같은 보조함수가 책임을 진다.
+
+
+_map([1, 2, 3, 4], function(v) {
+  return v + 10;
+})
+
+// 3. 커링 ( 함수와 인자를 다루는 기법 )
+  // 커링은 함수 하나가 n개의 인자를 받는 과정을 n 개의 함수로 각각의 인자를 받도록 하는 것이다.
+  // 부분적으로 적용된 함수를 체인으로 계속 생성해 결과적으로 값을 처리하도록 하는 것.
+  
+  //1. curry
+  /** 필요한 인자를 모두 채울때까지 인자를 적용해 나가다가 모든 인자의 개수가 채워지면 
+  함수의 본체를 실행하는 기법 **/
+function _curry(fn) {
+  return function(a, b) {
+    return arguments.length === 2 ? fn(a, b) : function(b) { return fn(a, b);};
+  }
+}
+
+// currying
+
+var add = _curry(function(a, b) {
+  return a + b;
+});
+
+var add10 = add(10);
+console.log( add10(5) );
+console.log( add(5)(3) );
+console.log( add(10, 2) );
+
+// 결국은 본체 함수인 _curry안의 인자인 함수를 값으로 들고 있다가 원하는 시점까지
+// 미뤄뒀다가 최종적으로 평가하는 기법이다. 함수가 함수를 대신 실행하거나 함수가 함수를 리턴하는
+// 방식이 함수형 프로그래밍이다. 
+
+var sub = _curry(function(a, b) {
+  return a - b;
+})
+console.log( sub(10, 5) );
+
+var sub10 = sub(10)
+console.log(sub10(5));
+
+  //2 curryr : curryright : 오른쪽 인자부터 적용해 나가는 함수.
+// 12분부터 
+
 </script>
